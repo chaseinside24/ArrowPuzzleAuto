@@ -8,14 +8,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Extract Android project archive
+        run: |
+          test -f ArrowPuzzleAuto-phone-build.zip
+          unzip -q ArrowPuzzleAuto-phone-build.zip
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '17'
       - uses: gradle/actions/setup-gradle@v4
       - name: Build debug APK
+        working-directory: ArrowPuzzleAuto
         run: gradle --no-daemon assembleDebug
       - uses: actions/upload-artifact@v4
         with:
           name: ArrowPuzzleAuto-debug-apk
-          path: app/build/outputs/apk/debug/*.apk
+          path: ArrowPuzzleAuto/app/build/outputs/apk/debug/*.apk
