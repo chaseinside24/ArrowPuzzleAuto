@@ -14,8 +14,22 @@ jobs:
           unzip -q ArrowPuzzleAuto-phone-build.zip
           cp tablet-patch/ArrowPuzzleAuto/app/src/main/java/com/example/arrowpuzzleauto/ArrowPuzzleGeometry.java ArrowPuzzleAuto/app/src/main/java/com/example/arrowpuzzleauto/ArrowPuzzleGeometry.java
           cp tablet-patch/ArrowPuzzleAuto/app/src/main/java/com/example/arrowpuzzleauto/BoardRecognizer.java ArrowPuzzleAuto/app/src/main/java/com/example/arrowpuzzleauto/BoardRecognizer.java
-          sed -i 's/ArrowPuzzleGeometry.claimButtonCenter()/ArrowPuzzleGeometry.claimButtonCenter((float) frame.width \/ frame.height)/g' ArrowPuzzleAuto/app/src/main/java/com/example/arrowpuzzleauto/AutoSolverService.java
-          sed -i 's/ArrowPuzzleGeometry.centers()/ArrowPuzzleGeometry.centers((float) frame.width \/ frame.height)/g' ArrowPuzzleAuto/app/src/main/java/com/example/arrowpuzzleauto/AutoSolverService.java
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path("ArrowPuzzleAuto/app/src/main/java/com/example/arrowpuzzleauto/AutoSolverService.java")
+          s = p.read_text()
+          replacements = {
+              "ArrowPuzzleGeometry.claimButtonCenter()":
+                  "ArrowPuzzleGeometry.claimButtonCenter(frame.width, frame.height, board.geometryRotation)",
+              "ArrowPuzzleGeometry.centers().get(index)":
+                  "ArrowPuzzleGeometry.centers(frame.width, frame.height, board.geometryRotation).get(index)",
+          }
+          for old, new in replacements.items():
+              if s.count(old) != 1:
+                  raise SystemExit(f"Expected exactly one occurrence of {old!r}, found {s.count(old)}")
+              s = s.replace(old, new)
+          p.write_text(s)
+          PY
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
