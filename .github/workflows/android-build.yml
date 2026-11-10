@@ -44,3 +44,7 @@ jobs:
         with:
           name: ArrowPuzzleAuto-Tab-S10-FE
           path: ArrowPuzzleAuto/app/build/outputs/apk/debug/*.apk
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ArrowPuzzleAuto-source-debug
+          path: ArrowPuzzleAuto-source-debug.zip
