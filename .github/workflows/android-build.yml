@@ -12,6 +12,10 @@ jobs:
         run: |
           test -f ArrowPuzzleAuto-phone-build.zip
           unzip -q ArrowPuzzleAuto-phone-build.zip
+          cp tablet-patch/ArrowPuzzleAuto/app/src/main/java/com/example/arrowpuzzleauto/ArrowPuzzleGeometry.java ArrowPuzzleAuto/app/src/main/java/com/example/arrowpuzzleauto/ArrowPuzzleGeometry.java
+          cp tablet-patch/ArrowPuzzleAuto/app/src/main/java/com/example/arrowpuzzleauto/BoardRecognizer.java ArrowPuzzleAuto/app/src/main/java/com/example/arrowpuzzleauto/BoardRecognizer.java
+          sed -i 's/ArrowPuzzleGeometry.claimButtonCenter()/ArrowPuzzleGeometry.claimButtonCenter((float) frame.width \/ frame.height)/g' ArrowPuzzleAuto/app/src/main/java/com/example/arrowpuzzleauto/AutoSolverService.java
+          sed -i 's/ArrowPuzzleGeometry.centers()/ArrowPuzzleGeometry.centers((float) frame.width \/ frame.height)/g' ArrowPuzzleAuto/app/src/main/java/com/example/arrowpuzzleauto/AutoSolverService.java
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
@@ -22,5 +26,5 @@ jobs:
         run: gradle --no-daemon assembleDebug
       - uses: actions/upload-artifact@v4
         with:
-          name: ArrowPuzzleAuto-debug-apk
+          name: ArrowPuzzleAuto-Tab-S10-FE
           path: ArrowPuzzleAuto/app/build/outputs/apk/debug/*.apk
