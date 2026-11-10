@@ -30,6 +30,8 @@ jobs:
               s = s.replace(old, new)
           p.write_text(s)
           PY
+      - name: Package patched Android source for inspection
+        run: zip -qr ArrowPuzzleAuto-source-debug.zip ArrowPuzzleAuto/app/src/main
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
